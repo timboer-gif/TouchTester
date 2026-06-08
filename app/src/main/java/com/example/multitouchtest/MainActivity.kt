@@ -197,6 +197,8 @@ fun MultiTouchApp() {
         editorItems.forEach { item ->
             var contentSize by remember(item.id) { mutableStateOf(IntSize.Zero) }
             val density = LocalDensity.current
+            val contentWidth = with(density) { contentSize.width.toDp() }
+            val contentHeight = with(density) { contentSize.height.toDp() }
             val paletteYOffset = with(density) { contentSize.height.toDp() + 8.dp }
             Box(
                 modifier = Modifier
@@ -267,7 +269,12 @@ fun MultiTouchApp() {
                     }
 
                     if (isEditMode) {
-                        Box(modifier = Modifier.fillMaxSize()) {
+                        Box(
+                            modifier = Modifier.size(
+                                width = contentWidth,
+                                height = contentHeight
+                            )
+                        ) {
                             Row(
                                 modifier = Modifier
                                     .align(Alignment.TopCenter)
