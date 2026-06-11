@@ -143,6 +143,8 @@ fun MultiTouchApp() {
     var isDarkTheme by remember { mutableStateOf(true) }
     var isEditMode by remember { mutableStateOf(false) }
     var showIconMenu by remember { mutableStateOf(false) }
+    var showSettingsDialog by remember { mutableStateOf(false) }
+    var touchRadius by remember { mutableStateOf(24f) }
     val touchPoints = remember { mutableStateMapOf<Long, TouchPoint>() }
     val touchSlots = remember { mutableStateMapOf<Long, Int>() }
     val editorItems = remember { mutableStateListOf<EditorItem>() }
@@ -187,7 +189,7 @@ fun MultiTouchApp() {
                 touchPoints.values.forEach { point ->
                     drawCircle(
                         color = point.color,
-                        radius = 24f,
+                        radius = touchRadius,
                         center = point.position
                     )
                 }
@@ -354,6 +356,38 @@ fun MultiTouchApp() {
                         }
                     }
                 }
+            }
+        }
+
+        if (showSettingsDialog) {
+            AlertDialog(
+                onDismissRequest = { showSettingsDialog = false },
+                title = { Text("Settings") },
+                text = {
+                    Column {
+                        Text("Touch Point Size: ${touchRadius.roundToInt()}")
+                        Slider(
+                            value = touchRadius,
+                            onValueChange = { touchRadius = it },
+                            valueRange = 10f..200f
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { showSettingsDialog = false }) {
+                        Text("Close")
+                    }
+                }
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 48.dp, end = 16.dp)
+        ) {
+            FilledTonalIconButton(onClick = { showSettingsDialog = true }) {
+                Icon(Icons.Default.Settings, contentDescription = "Settings")
             }
         }
 
